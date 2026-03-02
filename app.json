@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "PEAMS",
-    "slug": "peams",
-    "scheme": "peams",
+    "name": "Smart Parcel Box",
+    "slug": "smart-parcel-box",
+    "scheme": "smart-parcel-box",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,8 +22,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.peams.app",
-      "googleServicesFile" : "./google-services.json"
+      "package": "com.smartparcelbox.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -34,10 +33,7 @@
       "expo-notifications"
     ],
     "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "69562aad-aead-46b9-ac87-d6fa0629547e"
-      }
+      "router": {}
     },
     "owner": "hy-mike"
   }

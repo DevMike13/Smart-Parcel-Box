@@ -37,22 +37,6 @@ export default function Layout() {
     "Inter-Regular": require("../assets/fonts/Inter-UI-Regular.otf"),
   });
 
-  // ✅ Grab push notification utils
-  const { registerAndStorePushToken, expoPushToken } = usePushNotification();
-
-  // Notification listener (only once)
-  useEffect(() => {
-    const subscription = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        const { temperature } = response.notification.request.content.data;
-        if (temperature) {
-          console.log(`🌡️ Received push notification with temperature: ${temperature}`);
-        }
-      }
-    );
-
-    return () => subscription.remove();
-  }, []);
 
   useEffect(() => {
     if (fontsLoaded || error) {
@@ -132,12 +116,6 @@ export default function Layout() {
     //   registerAndStorePushToken();
     // }
   }, [segments, user, role, loading, hasMounted]);
-
-  useEffect(() => {
-    // if (user) {
-      registerAndStorePushToken(); 
-    // }
-  }, []);
 
   if (!fontsLoaded && !error) {
     return null;

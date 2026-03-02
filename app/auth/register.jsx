@@ -90,8 +90,8 @@ const Register = () => {
         fullname: fullname,   
         role: activeRole.toLowerCase(),
         email: email,
-        isAccepted: false,
-        isVerified: false,
+        isAccepted: true,
+        isVerified: true,
         createdAt: new Date().toISOString()
       });
       console.log('User document created successfully in Firestore');

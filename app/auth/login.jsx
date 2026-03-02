@@ -82,13 +82,13 @@ const Login = () => {
         <View style={styles.innerContainer}>
           <View style={styles.header}>
             {/* <Image source={images.logo} style={styles.imageLogo} resizeMode="contain" /> */}
-            <LottieView
+            {/* <LottieView
              source={images.rooster}
               autoPlay
               loop
               style={{ width: 80, height: 80 }}
-            />
-            <Text style={styles.headerTitle}>PEAMS</Text>
+            /> */}
+            <Text style={styles.headerTitle}>Smart Parcel Box</Text>
           </View>
           <ScrollView
             contentContainerStyle={styles.scrollContainer}
@@ -96,7 +96,7 @@ const Login = () => {
             showsVerticalScrollIndicator={false}
           >
           <View style={styles.inputsContainer}>
-            <Text style={styles.title}>Login</Text>
+            <Text style={styles.title}></Text>
 
             {/* Email Input */}
             <View style={styles.inputMainContainer}>
@@ -134,7 +134,7 @@ const Login = () => {
                   <Ionicons
                     name={!showPassword ? 'eye-off-outline' : "eye-outline"}
                     size={26}
-                    color="#3B82F6"
+                    color="#2c2c2c"
                   />
                 </TouchableOpacity>
               </View>
@@ -142,21 +142,21 @@ const Login = () => {
 
             {/* Login Button */}
             <TouchableOpacity onPress={handleLogin} style={styles.loginButton} disabled={loading}>
-              <Text style={styles.buttonText}>{loading ? 'Logging in...' : 'Log In'}</Text>
+              <Text style={styles.buttonText}>{loading ? 'Signing in...' : 'Sign In'}</Text>
             </TouchableOpacity>
 
             {/* Forgot Password */}
-            <TouchableOpacity onPress={() => router.push('/auth/forgotPassword')}>
+            {/* <TouchableOpacity onPress={() => router.push('/auth/forgotPassword')}>
               <Text style={styles.forgetText}>Forgot Password?</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             {/* Register */}
-            <View style={styles.registerContainer}>
+            {/* <View style={styles.registerContainer}>
               <Text style={styles.registerText}>Don't have an account? </Text>
               <TouchableOpacity onPress={() => router.push('/auth/register')}>
                 <Text style={styles.registerButtonText}>Sign Up</Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
           </ScrollView>
         </View>
@@ -185,19 +185,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     elevation: 5,
     width: '85%',
-    height: '80%',
+    height: '60%',
     marginHorizontal: 'auto',
     marginVertical: 'auto',
-    borderRadius: 30,
+    borderRadius: 10,
   },
   inputsContainer:{
     paddingHorizontal: 20
   },
   header:{
-    backgroundColor: '#4b90df',
-    height: 70,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    backgroundColor: '#2c2c2c',
+    height: 55,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     flexDirection: 'row',
     justifyContent: 'center', 
     alignItems: 'center',
@@ -216,15 +216,15 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Bold',
     fontSize: 32,
     textAlign: 'center',
-    marginBottom: 16,
-    color: '#255ba0',
+    marginBottom: 0,
+    color: '#2c2c2c',
     marginTop: 12
   },
   label: {
     fontFamily: 'Inter-Medium',
     fontSize: 16,
     marginBottom: 5,
-    color: '#255ba0',
+    color: '#2c2c2c',
   },
   inputMainContainer: {
     width: '100%',
@@ -233,20 +233,20 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontFamily: 'Inter-Regular',
-    color: '#000',
+    color: '#2c2c2c',
   },
   inputContainer: {
     width: '100%',
-    height: 64,
+    height: 55,
     paddingHorizontal: 16,
     borderWidth: 2,
-    borderColor: '#a1a2a8',
+    borderColor: '#d9d9d9',
     borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
   },
   inputContainerFocused: {
-    borderColor: '#3B82F6',
+    borderColor: '#2c2c2c',
   },
   forgetText: {
     fontFamily: 'Inter-Regular',
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
   },
   loginButton: { 
     width: '100%', 
-    backgroundColor: '#4b90df',
+    backgroundColor: '#2c2c2c',
     justifyContent: 'center', 
     alignItems: 'center', 
     paddingVertical: 10, 
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     marginTop: 16, 
   }, 
   buttonText: { 
-    fontFamily: 'Inter-Bold', 
+    fontFamily: 'Inter-Medium', 
     fontSize: 20, 
     color: 'white' 
   },
