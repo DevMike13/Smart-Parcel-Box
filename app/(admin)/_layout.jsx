@@ -173,7 +173,7 @@ export default function AdminTabsLayout() {
           },
           tabBarShowLabel: false,
           headerStyle: {
-            backgroundColor: '#4b90df',
+            backgroundColor: '#2c2c2c',
             elevation: 0,
             shadowOpacity: 0,
           },
@@ -190,20 +190,20 @@ export default function AdminTabsLayout() {
                 style={styles.imageLogo}
                 resizeMode="contain"
               /> */}
-              <LottieView
+              {/* <LottieView
                 source={images.rooster}
                 autoPlay
                 loop
                 style={{ width: 60, height: 60 }}
-              />
-              <Text style={styles.appNameText}>PEAMS</Text>
+              /> */}
+              <Text style={styles.appNameText}>Smart Parcel Box</Text>
             </View>
           ),
           headerTitleAlign: 'center',
           headerLeft: () => null,
           headerRight: () => (
             <View>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={async () => {
                   const opening = !showDropdown;
                   setShowDropdown(opening);
@@ -222,7 +222,7 @@ export default function AdminTabsLayout() {
                     </View>
                   )}
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               {/* <NotificationDropdown /> */}
             </View>
           ),
@@ -233,7 +233,7 @@ export default function AdminTabsLayout() {
           options={{
             tabBarIcon: ({ focused }) => (
               <Ionicons
-                name={focused ? 'home' : 'home-outline'}
+                name={focused ? 'file-tray-stacked' : 'file-tray-stacked-outline'}
                 size={26}
                 color={focused ? '#007AFF' : '#999'}
               />
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
     height: 36,
   },
   appNameText: {
-    fontFamily: 'Inter-Black',
+    fontFamily: 'Inter-Bold',
     fontSize: 18,
     marginLeft: 0,
     color: 'white',

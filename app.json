@@ -33,7 +33,10 @@
       "expo-notifications"
     ],
     "extra": {
-      "router": {}
+      "router": {},
+      "eas": {
+        "projectId": "9a7542e0-dec0-4b20-b6f3-f28d691b3c52"
+      }
     },
     "owner": "hy-mike"
   }

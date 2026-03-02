@@ -12,9 +12,11 @@ import sensorReadings from "../assets/images/sensor_readings.png";
 import manualControls from "../assets/images/manual_controls.png";
 import thresholds from "../assets/images/thrshold.png";
 import accounts from "../assets/images/accounts.png";
+import avatar from "../assets/images/avatar.jpg";
 
 // ANIMATION
 import rooster from "../assets/animations/Rooster.json";
+import parcel from "../assets/animations/Shipment.json";
 
 export default { 
     logo, 
@@ -31,5 +33,7 @@ export default {
     manualControls,
     thresholds,
     accounts,
-    rooster
+    rooster,
+    parcel,
+    avatar
 };

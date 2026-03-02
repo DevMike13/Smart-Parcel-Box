@@ -4,8 +4,6 @@ import { useAuthStore } from '../store/useAuthStore';
 import { ActivityIndicator, View } from 'react-native';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import * as Notifications from 'expo-notifications';
-import { usePushNotification } from '../utils/useNotification';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -51,8 +49,9 @@ export default function Layout() {
   // ✅ Handle auth & token registration
   useEffect(() => {
     if (!hasMounted || loading) return;
-
-    const inPublicRoute = segments[0] === null || segments[0] === 'auth';
+  
+    const inIndexRoute = segments.length === 0; // "/" splash
+    const inAuthRoute = segments[0] === 'auth';
     const inAdminRoute = segments[0] === '(admin)';
     const inUserRoute = segments[0] === '(user)';
     const inPendingRoute = segments[0] === 'pending';
@@ -62,7 +61,9 @@ export default function Layout() {
 
     const { isAccepted, isVerified, justLoggedIn, role } = useAuthStore.getState();
 
-    if (!user && !inPublicRoute) {
+    if (inIndexRoute) return;
+
+    if (!user && !inAuthRoute) {
       router.replace('/auth/login');
       return;
     }
@@ -86,7 +87,7 @@ export default function Layout() {
     }
 
     if (user && role) {
-      if (inPublicRoute || inPendingRoute || inOtpRoute) {
+      if (inAuthRoute || inPendingRoute || inOtpRoute) {
         router.replace(role === 'admin' ? '/(admin)' : '/(user)');
       } else {
         if (role === 'admin' && !inAdminRoute) router.replace('/(admin)');
