@@ -160,7 +160,7 @@ export default function AdminTabsLayout() {
         screenOptions={{
           tabBarStyle: {
             position: 'absolute',
-            backgroundColor: '#fff',
+            backgroundColor: '#2c2c2c',
             borderTopWidth: 0,
             elevation: 5,
             height: 70,
@@ -232,77 +232,94 @@ export default function AdminTabsLayout() {
           name="(tabs)/index"
           options={{
             tabBarIcon: ({ focused }) => (
-              <Ionicons
-                name={focused ? 'file-tray-stacked' : 'file-tray-stacked-outline'}
-                size={26}
-                color={focused ? '#007AFF' : '#999'}
-              />
+              <View
+                style={{
+                  backgroundColor: focused ? '#d9f2ff' : 'transparent',
+                  width: 50,
+                  height: 50,
+                  borderRadius: 30,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Ionicons
+                  name={focused ? 'file-tray-stacked' : 'file-tray-stacked-outline'}
+                  size={26}
+                  color={focused ? '#2c2c2c' : '#d9f2ff'}
+                />
+              </View>
             ),
           }}
         />
+
         <Tabs.Screen
-          name="(tabs)/controls"
+          name="(tabs)/livefeed"
           options={{
             tabBarIcon: ({ focused }) => (
-              <Ionicons
-                name={focused ? 'hand-left' : 'hand-left-outline'}
-                size={26}
-                color={focused ? '#007AFF' : '#999'}
-              />
+              <View
+                style={{
+                  backgroundColor: focused ? '#d9f2ff' : 'transparent',
+                  width: 50,
+                  height: 50,
+                  borderRadius: 30,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Ionicons
+                  name={focused ? 'videocam' : 'videocam-outline'}
+                  size={26}
+                  color={focused ? '#2c2c2c' : '#d9f2ff'}
+                />
+              </View>
             ),
           }}
         />
-        <Tabs.Screen
-          name="(tabs)/input"
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <Ionicons
-                name={focused ? 'file-tray-full' : 'file-tray-full-outline'}
-                size={26}
-                color={focused ? '#007AFF' : '#999'}
-              />
-            ),
-          }}
-        />
+
         <Tabs.Screen
           name="(tabs)/data"
           options={{
             tabBarIcon: ({ focused }) => (
-              <Ionicons
-                name={focused ? 'analytics' : 'analytics-outline'}
-                size={30}
-                color={focused ? '#007AFF' : '#999'}
-              />
+              <View
+                style={{
+                  backgroundColor: focused ? '#d9f2ff' : 'transparent',
+                  width: 50,
+                  height: 50,
+                  borderRadius: 30,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Ionicons
+                  name={focused ? 'cube' : 'cube-outline'}
+                  size={26}
+                  color={focused ? '#2c2c2c' : '#d9f2ff'}
+                />
+              </View>
             ),
           }}
         />
-        <Tabs.Screen
-          name="(tabs)/accounts"
-          options={{
-            tabBarIcon: ({ focused }) => (
-              // <MaterialCommunityIcons
-              //   name="butterfly"
-              //   size={26}
-              //   color={focused ? '#007AFF' : '#999'}
-              // />
-              <Ionicons
-                name={focused ? 'people' : 'people-outline'}
-                size={26}
-                color={focused ? '#007AFF' : '#999'}
-              />
-            ),
-          }}
-        />
-      
+        
         <Tabs.Screen
           name="(tabs)/menu"
           options={{
             tabBarIcon: ({ focused }) => (
-              <Ionicons
-                name={focused ? 'menu' : 'menu-outline'}
-                size={26}
-                color={focused ? '#007AFF' : '#999'}
-              />
+              <View
+                style={{
+                  backgroundColor: focused ? '#d9f2ff' : 'transparent',
+                  width: 50,
+                  height: 50,
+                  borderRadius: 30,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <Ionicons
+                  name={focused ? 'menu' : 'menu-outline'}
+                  size={26}
+                  color={focused ? '#2c2c2c' : '#d9f2ff'}
+                />
+              </View>
             ),
           }}
         />
