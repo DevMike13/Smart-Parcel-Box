@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, Dimensions, ScrollView, TouchableOpacity
 import React, { useState, useEffect } from 'react';
 import { images } from '../../../constants';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, collection, addDoc, setDoc } from 'firebase/firestore';
 import { ref, onValue, set } from 'firebase/database';
 import { firestoreDB, realtimeDB } from '../../../firebase';
 import { useAuthStore } from '../../../store/useAuthStore';
@@ -24,6 +24,11 @@ const HomeScreen = () => {
 
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [confirmModalVisibleC2, setConfirmModalVisibleC2] = useState(false);
+
+  const [pbIsLocked, setpbIsLocked] = useState(true);
+
+  const [cb1IsLocked, setcb1IsLocked] = useState(true);
+  const [cb2IsLocked, setcb2IsLocked] = useState(true);
 
   // C2
   const [modalVisibleC2, setModalVisibleC2] = useState(false);
@@ -85,6 +90,11 @@ const HomeScreen = () => {
         PaymentStatus: activeSelection,
       });
 
+      await set(ref(realtimeDB, `Compartment/${box}/Controls`), {
+        LockStatus: 'Locked'
+      });
+
+
       Alert.alert('Success', 'Compartment data saved!');
       setModalVisible(false);
       setTrackingNo('');
@@ -92,6 +102,20 @@ const HomeScreen = () => {
     } catch (error) {
       Alert.alert('Error', error.message);
     }
+
+    try {
+      await setDoc(doc(firestoreDB, 'pendingParcels', 'Box1'), {
+        Box: 'Box1',
+        TrackingNo: trackingNo,
+        ETA: eta.toISOString(),
+        Status: 'Undelivered',
+        PaymentStatus: activeSelection,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error updating pending parcel in Firestore:", error);
+    }
+
   };
 
   const saveCompartmentDataC2 = async (box = 'Box2') => {
@@ -108,12 +132,29 @@ const HomeScreen = () => {
         PaymentStatus: activeSelection,
       });
 
+      await set(ref(realtimeDB, `Compartment/${box}/Controls`), {
+        LockStatus: 'Locked'
+      });
+
       Alert.alert('Success', 'Compartment data saved!');
       setModalVisibleC2(false);
       setTrackingNoC2('');
       setEtaC2(new Date());
     } catch (error) {
       Alert.alert('Error', error.message);
+    }
+
+    try {
+      await setDoc(doc(firestoreDB, 'pendingParcels', 'Box2'), {
+        Box: 'Box2',
+        TrackingNo: trackingNoC2,
+        ETA: etaC2.toISOString(),
+        Status: 'Undelivered',
+        PaymentStatus: activeSelection,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error updating pending parcel in Firestore:", error);
     }
   };
 
@@ -133,9 +174,24 @@ const HomeScreen = () => {
   };
 
   // Confirmed save for Box1
-  const confirmSaveBox1 = () => {
+  const confirmSaveBox1 = async () => {
     setConfirmModalVisible(false);
-    saveCompartmentData('Box1');
+
+    await saveCompartmentData('Box1');
+
+    try {
+      await setDoc(doc(firestoreDB, 'pendingParcels', 'Box1'), {
+        Box: 'Box1',
+        TrackingNo: trackingNo,
+        ETA: eta.toISOString(),
+        Status: 'Undelivered',
+        PaymentStatus: activeSelection,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error updating pending parcel in Firestore:", error);
+    }
+    
   };
 
   const handleSaveBox2 = () => {
@@ -151,10 +207,82 @@ const HomeScreen = () => {
     }
   };
 
-  const confirmSaveBox2 = () => {
+  const confirmSaveBox2 = async () => {
     setConfirmModalVisibleC2(false);
-    saveCompartmentDataC2('Box2');
+
+    await saveCompartmentDataC2('Box2');
+
+    try {
+      await setDoc(doc(firestoreDB, 'pendingParcels', 'Box2'), {
+        Box: 'Box2',
+        TrackingNo: trackingNoC2,
+        ETA: etaC2.toISOString(),
+        Status: 'Undelivered',
+        PaymentStatus: activeSelection,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Error updating pending parcel in Firestore:", error);
+    }
+    
   };
+
+  useEffect(() => {
+    const lockRef = ref(realtimeDB, "OwnerAccess/LockStatus");
+
+    const unsubscribe = onValue(lockRef, (snapshot) => {
+      const value = snapshot.val();
+
+      if (value === "Locked") {
+        setpbIsLocked(true);
+      } else if (value === "Unlocked") {
+        setpbIsLocked(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const cb1Ref = ref(realtimeDB, "Compartment/Box1/Controls/LockStatus");
+    const cb2Ref = ref(realtimeDB, "Compartment/Box2/Controls/LockStatus");
+
+    const unsubCb1 = onValue(cb1Ref, (snapshot) => {
+      const value = snapshot.val();
+      setcb1IsLocked(value === "Locked");
+    });
+
+    const unsubCb2 = onValue(cb2Ref, (snapshot) => {
+      const value = snapshot.val();
+      setcb2IsLocked(value === "Locked");
+    });
+
+    // Cleanup
+    return () => {
+      unsubCb1();
+      unsubCb2();
+    };
+  }, []);
+
+  const toggleLock = () => {
+    const newStatus = pbIsLocked ? "Unlocked" : "Locked";
+
+    set(ref(realtimeDB, "OwnerAccess/LockStatus"), newStatus);
+    setpbIsLocked(!pbIsLocked);
+  };
+
+  const toggleCb1Lock = () => {
+    const newStatus = cb1IsLocked ? "Unlocked" : "Locked";
+    set(ref(realtimeDB, "Compartment/Box1/Controls/LockStatus"), newStatus);
+    setcb1IsLocked(!cb1IsLocked);
+  };
+
+  const toggleCb2Lock = () => {
+    const newStatus = cb2IsLocked ? "Unlocked" : "Locked";
+    set(ref(realtimeDB, "Compartment/Box2/Controls/LockStatus"), newStatus);
+    setcb2IsLocked(!cb2IsLocked);
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView 
@@ -206,6 +334,29 @@ const HomeScreen = () => {
               <Text style={styles.etaValue}>{compartmentData?.ETA ? formatDate(compartmentData.ETA) : '## #####, ####'}</Text>
             </View>
           </View>
+          <View style={styles.divider} />
+
+          <View style={[styles.headerContainer, { alignItems: 'center' }]}>
+            <Text style={[styles.trackingText, { fontSize: 14 }]}>Cashbox Control</Text>
+            <View style={styles.lockRow}>
+              <Ionicons 
+                name={cb1IsLocked ? "lock-closed" : "lock-open"} 
+                size={14} 
+                color={cb1IsLocked ? "#ff4d4d" : "#00C853"} 
+              />
+              <Text style={styles.lockStatus}>
+                {cb1IsLocked ? "Locked" : "Unlocked"}
+              </Text>
+              
+              <Switch
+                value={cb1IsLocked}
+                onValueChange={toggleCb1Lock}
+                trackColor={{ false: "#d9f2ff", true: "#00C853" }}
+                thumbColor={"#ffffff"}
+              />
+            </View>
+          </View>
+
           <View style={styles.buttonContainer}>
             <TouchableOpacity 
               style={styles.setupButton}
@@ -248,6 +399,28 @@ const HomeScreen = () => {
               <Text style={styles.etaValue}>{compartmentDataC2?.ETA ? formatDate(compartmentDataC2.ETA) : '## #####, ####'}</Text>
             </View>
           </View>
+          <View style={styles.divider} />
+
+          <View style={[styles.headerContainer, { alignItems: 'center' }]}>
+            <Text style={[styles.trackingText, { fontSize: 14 }]}>Cashbox Control</Text>
+            <View style={styles.lockRow}>
+              <Ionicons 
+                name={cb2IsLocked ? "lock-closed" : "lock-open"} 
+                size={14} 
+                color={cb2IsLocked ? "#ff4d4d" : "#00C853"} 
+              />
+              <Text style={styles.lockStatus}>
+                {cb2IsLocked ? "Locked" : "Unlocked"}
+              </Text>
+              
+              <Switch
+                value={cb2IsLocked}
+                onValueChange={toggleCb2Lock}
+                trackColor={{ false: "#d9f2ff", true: "#00C853" }}
+                thumbColor={"#ffffff"}
+              />
+            </View>
+          </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity 
               style={[styles.setupButton, { backgroundColor: '#eeeeee'}]}
@@ -257,7 +430,29 @@ const HomeScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-
+        
+        <View style={[styles.card, { marginTop: 20, backgroundColor: '#151515' }]}>
+          <View style={[styles.headerContainer, { alignItems: 'center' }]}>
+            <Text style={styles.trackingText}>PB Lock Control</Text>
+            <View style={styles.lockRow}>
+              <Ionicons 
+                name={pbIsLocked ? "lock-closed" : "lock-open"} 
+                size={14} 
+                color={pbIsLocked ? "#ff4d4d" : "#00C853"} 
+              />
+              <Text style={styles.lockStatus}>
+                {pbIsLocked ? "Locked" : "Unlocked"}
+              </Text>
+              
+              <Switch
+                value={pbIsLocked}
+                onValueChange={toggleLock}
+                trackColor={{ false: "#d9f2ff", true: "#00C853" }}
+                thumbColor={"#ffffff"}
+              />
+            </View>
+          </View>
+        </View>
         {/* ================= MODAL ================= */}
         <Modal
           animationType="slide"
@@ -748,5 +943,25 @@ const styles = StyleSheet.create({
   },
   borderRightStyle:{
     borderRightWidth: 1
+  },
+
+  lockRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  lockStatus: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+
+  divider:{
+    width: '85%',
+    height: 1,
+    backgroundColor: "#d9f2ff",
+    marginHorizontal: 'auto',
+    marginTop: 20
   }
 });

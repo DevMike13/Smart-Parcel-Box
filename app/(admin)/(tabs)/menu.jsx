@@ -103,13 +103,13 @@ export default function MenuScreen() {
           <Text style={styles.menuText}>Account</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuButton} onPress={handleContact}>
+        {/* <TouchableOpacity style={styles.menuButton} onPress={handleContact}>
           <Text style={styles.menuText}>Contact</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
-        <TouchableOpacity style={styles.menuButton} onPress={handleSettings}>
+        {/* <TouchableOpacity style={styles.menuButton} onPress={handleSettings}>
           <Text style={styles.menuText}>Settings</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity style={styles.menuButton} onPress={handleCheckUpdates}>
           <Text style={styles.menuText}>Check for Updates</Text>
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   menuButton: {
     width: '80%',
     paddingVertical: 14,
-    borderRadius: 10,
+    borderRadius: 30,
     backgroundColor: '#767577',
     alignItems: 'center',
     marginVertical: 8,
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '500',
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Inter-Medium',
   },
   logoutButton: {
     backgroundColor: '#ef4444',
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Inter-Medium',
   },
 
   modalOverlay: {
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontFamily: 'Poppins-Bold',
+    fontFamily: 'Inter-Bold',
     color: '#222',
     textAlign: 'center',
     marginBottom: 16,
@@ -258,13 +258,13 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     fontSize: 14,
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Inter-Medium',
     color: '#555',
     marginTop: 10,
   },
   infoValue: {
     fontSize: 15,
-    fontFamily: 'Poppins-Regular',
+    fontFamily: 'Inter-Regular',
     color: '#000',
     fontWeight: '500',
   },
@@ -277,6 +277,6 @@ const styles = StyleSheet.create({
   closeText: {
     color: '#fff',
     fontSize: 15,
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Inter-Medium',
   },
 });
