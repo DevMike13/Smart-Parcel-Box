@@ -91,7 +91,8 @@ const HomeScreen = () => {
       });
 
       await set(ref(realtimeDB, `Compartment/${box}/Controls`), {
-        LockStatus: 'Locked'
+        LockStatus: 'Locked',
+        UnlockSource: 'System'
       });
 
 
@@ -133,7 +134,8 @@ const HomeScreen = () => {
       });
 
       await set(ref(realtimeDB, `Compartment/${box}/Controls`), {
-        LockStatus: 'Locked'
+        LockStatus: 'Locked',
+        UnlockSource: 'System'
       });
 
       Alert.alert('Success', 'Compartment data saved!');
@@ -273,13 +275,19 @@ const HomeScreen = () => {
 
   const toggleCb1Lock = () => {
     const newStatus = cb1IsLocked ? "Unlocked" : "Locked";
-    set(ref(realtimeDB, "Compartment/Box1/Controls/LockStatus"), newStatus);
+    set(ref(realtimeDB, "Compartment/Box1/Controls"), {
+      LockStatus: newStatus,
+      UnlockSource: "Manual"
+    });
     setcb1IsLocked(!cb1IsLocked);
   };
 
   const toggleCb2Lock = () => {
     const newStatus = cb2IsLocked ? "Unlocked" : "Locked";
-    set(ref(realtimeDB, "Compartment/Box2/Controls/LockStatus"), newStatus);
+    set(ref(realtimeDB, "Compartment/Box2/Controls"), {
+      LockStatus: newStatus,
+      UnlockSource: "Manual"
+    });
     setcb2IsLocked(!cb2IsLocked);
   };
 

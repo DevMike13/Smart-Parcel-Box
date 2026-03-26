@@ -2,11 +2,28 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Dimensions, Text } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { WebView } from "react-native-webview";
+import { ref, onValue, set } from 'firebase/database';
+import { realtimeDB } from '../../../firebase';
 
 const { width, height } = Dimensions.get("window");
 
 export default function LiveFeedScreen() {
-  
+  const [cameraIP, setCameraIP] = useState(null);
+
+  useEffect(() => {
+    const refCam = ref(realtimeDB, "/esp32cam_ip");
+    const unsubCam = onValue(refCam, (snapshot) => {
+      const value = snapshot.val();
+      setCameraIP(value);
+    });
+
+    return () => {
+      unsubCam();
+    };
+  }, []);
+
+  if (!cameraIP) return null;
+
   const renderPattern = () => {
     const icons = [];
     const iconSize = 40;
@@ -43,14 +60,24 @@ export default function LiveFeedScreen() {
         <Ionicons name='videocam' size={26} color='#2c2c2c' />
         <Text style={styles.title}>Live Feed</Text>
       </View>
-      
+       
       <View style={styles.webContainer}>
         <WebView
-          source={{ uri: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" }}
+          originWhitelist={['*']}
+          // source={{ uri: `http://${cameraIP}` }}
+          source={{
+            html: `
+              <html>
+                <body style="margin:0; padding:0; background:black;">
+                  <img src="http://${cameraIP}" style="width:100%; height:100%; object-fit:cover;" />
+                </body>
+              </html>
+            `
+          }}
           style={styles.webview}
-          javaScriptEnabled
-          domStorageEnabled
-          startInLoadingState
+          // javaScriptEnabled
+          // domStorageEnabled
+          // startInLoadingState
         />
       </View>
     </View>

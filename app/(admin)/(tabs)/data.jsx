@@ -28,7 +28,8 @@ const DataScreen = () => {
     // Listener for Pending parcels
     const pendingQuery = query(collection(firestoreDB, 'pendingParcels'), orderBy('timestamp', 'desc'));
     const unsubscribePending = onSnapshot(pendingQuery, (snapshot) => {
-      const pending = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const pending = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter(parcel => parcel.Status !== 'Delivered');
       setPendingParcels(pending);
       setLoading(false);
     });
