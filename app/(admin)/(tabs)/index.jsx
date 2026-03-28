@@ -312,7 +312,11 @@ const HomeScreen = () => {
 
         <View style={[styles.card, { backgroundColor: '#1164fe' }]}>
           <View style={styles.headerContainer}>
-            <Text style={styles.trackingText}>{compartmentData?.TrackingNo ? '#' + compartmentData.TrackingNo : '#----------'}</Text>
+            <Text style={styles.trackingText}>
+              {compartmentData?.TrackingNo && compartmentData?.Status !== "Delivered"
+                ? '#' + compartmentData.TrackingNo
+                : '#----------'}
+            </Text>
             <Text style={styles.compartmentText}>C1</Text>
           </View>
           <View style={styles.paymentContainer}>

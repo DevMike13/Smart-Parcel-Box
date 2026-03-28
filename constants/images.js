@@ -13,6 +13,7 @@ import manualControls from "../assets/images/manual_controls.png";
 import thresholds from "../assets/images/thrshold.png";
 import accounts from "../assets/images/accounts.png";
 import avatar from "../assets/images/avatar.jpg";
+import placeholder from "../assets/images/placeholder.jpg";
 
 // ANIMATION
 import rooster from "../assets/animations/Rooster.json";
@@ -35,5 +36,6 @@ export default {
     accounts,
     rooster,
     parcel,
-    avatar
+    avatar,
+    placeholder
 };

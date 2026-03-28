@@ -75,9 +75,9 @@ export default function LiveFeedScreen() {
             `
           }}
           style={styles.webview}
-          // javaScriptEnabled
-          // domStorageEnabled
-          // startInLoadingState
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+          mixedContentMode="always"
         />
       </View>
     </View>

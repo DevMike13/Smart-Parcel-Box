@@ -11,9 +11,12 @@ import {
   TouchableOpacity,
   Animated,
   Platform,
+  Image 
 } from 'react-native';
 import { firestoreDB } from '../../../firebase';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { images } from '../../../constants';
 
 const { width } = Dimensions.get('window');
 const tabList = ['Pending', 'Received'];
@@ -23,22 +26,63 @@ const DataScreen = () => {
   const [pendingParcels, setPendingParcels] = useState([]);
   const [receivedParcels, setReceivedParcels] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [imageUrls, setImageUrls] = useState({});
+
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
   
   useEffect(() => {
-    // Listener for Pending parcels
-    const pendingQuery = query(collection(firestoreDB, 'pendingParcels'), orderBy('timestamp', 'desc'));
+    const storage = getStorage();
+
+    const fetchImages = async (parcels) => {
+      const urls = {};
+
+      for (const parcel of parcels) {
+        try {
+          console.log('Trying:', parcel.TrackingNo);
+
+          const imageRef = ref(storage, `${parcel.TrackingNo}.jpg`);
+          const url = await getDownloadURL(imageRef);
+
+          console.log('SUCCESS:', url);
+
+          urls[parcel.TrackingNo] = url;
+        } catch (err) {
+          console.log('FAILED:', parcel.TrackingNo, err.message);
+        }
+      }
+
+      setImageUrls(urls);
+    };
+
+    const pendingQuery = query(
+      collection(firestoreDB, 'pendingParcels'),
+      orderBy('timestamp', 'desc')
+    );
+
     const unsubscribePending = onSnapshot(pendingQuery, (snapshot) => {
-      const pending = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-      .filter(parcel => parcel.Status !== 'Delivered');
+      const pending = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(parcel => parcel.Status !== 'Delivered');
+
       setPendingParcels(pending);
       setLoading(false);
     });
 
-    // Listener for Received parcels
-    const receivedQuery = query(collection(firestoreDB, 'receivedParcels'), orderBy('timestamp', 'desc'));
-    const unsubscribeReceived = onSnapshot(receivedQuery, (snapshot) => {
-      const received = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    // ✅ Received listener
+    const receivedQuery = query(
+      collection(firestoreDB, 'receivedParcels'),
+      orderBy('timestamp', 'desc')
+    );
+
+    const unsubscribeReceived = onSnapshot(receivedQuery, async (snapshot) => {
+      const received = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
       setReceivedParcels(received);
+      await fetchImages(received); // 🔥 load images here
       setLoading(false);
     });
 
@@ -86,10 +130,25 @@ const DataScreen = () => {
 
       return (
         <View key={parcel.id} style={[styles.parcelCard, { backgroundColor: activeTab === 'Pending' ? '#1164fe' : '#151515' } ]}>
+          
           <View style={styles.headerRow}>
             <Text style={styles.cashboxText}>Cashbox: {parcel.Box}</Text>
             <Text style={styles.trackingText}>#{parcel.TrackingNo}</Text>
           </View>
+          
+          {activeTab === 'Received' && imageUrls[parcel.TrackingNo] && (
+            <TouchableOpacity
+              onPress={() => {
+                setSelectedImage(imageUrls[parcel.TrackingNo]);
+                setModalVisible(true);
+              }}
+            >
+              <Image
+                source={{ uri: imageUrls[parcel.TrackingNo] }}
+                style={{ width: '100%', height: 200, borderRadius: 15, marginBottom: 10 }}
+              />
+            </TouchableOpacity>
+          )}
 
           <View style={styles.infoRow}>
             <View style={styles.badge}>
@@ -138,7 +197,27 @@ const DataScreen = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {renderContent()}
       </ScrollView>
+      
+      <Modal visible={modalVisible} transparent={true}>
+        <View style={styles.modalContainer}>
+          
+          {/* Close Button */}
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setModalVisible(false)}
+          >
+            <Ionicons name="close" size={30} color="#fff" />
+          </TouchableOpacity>
 
+          {/* Image */}
+          <Image
+            source={{ uri: selectedImage }}
+            style={styles.fullImage}
+            resizeMode="contain"
+          />
+
+        </View>
+      </Modal>
       
     </View>
   );
@@ -158,6 +237,7 @@ const styles = StyleSheet.create({
 
   parcelCard: {
     width: width * 0.9,
+    height: 'auto',
     backgroundColor: '#1164fe',
     borderRadius: 35,
     paddingVertical: 16,
@@ -251,5 +331,25 @@ const styles = StyleSheet.create({
   },
   borderRightStyle:{
     borderRightWidth: 1
-  }
+  },
+
+  // MODAL
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  fullImage: {
+    width: '100%',
+    height: '80%',
+  },
+
+  closeButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 1,
+  },
 });
