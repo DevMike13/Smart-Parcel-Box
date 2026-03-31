@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { firestoreDB } from '../../../firebase';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import { Video } from 'expo-av';
 import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { images } from '../../../constants';
 
@@ -41,8 +42,8 @@ const DataScreen = () => {
         try {
           console.log('Trying:', parcel.TrackingNo);
 
-          const imageRef = ref(storage, `${parcel.TrackingNo}.jpg`);
-          const url = await getDownloadURL(imageRef);
+          const videoRef = ref(storage, `${parcel.TrackingNo}.mp4`);
+          const url = await getDownloadURL(videoRef);
 
           console.log('SUCCESS:', url);
 
@@ -137,17 +138,24 @@ const DataScreen = () => {
           </View>
           
           {activeTab === 'Received' && imageUrls[parcel.TrackingNo] && (
-            <TouchableOpacity
-              onPress={() => {
-                setSelectedImage(imageUrls[parcel.TrackingNo]);
-                setModalVisible(true);
-              }}
-            >
-              <Image
-                source={{ uri: imageUrls[parcel.TrackingNo] }}
-                style={{ width: '100%', height: 200, borderRadius: 15, marginBottom: 10 }}
-              />
-            </TouchableOpacity>
+            // <TouchableOpacity
+            //   onPress={() => {
+            //     setSelectedImage(imageUrls[parcel.TrackingNo]);
+            //     setModalVisible(true);
+            //   }}
+            // >
+            //   <Image
+            //     source={{ uri: imageUrls[parcel.TrackingNo] }}
+            //     style={{ width: '100%', height: 200, borderRadius: 15, marginBottom: 10 }}
+            //   />
+            // </TouchableOpacity>
+            <Video
+              source={{ uri: imageUrls[parcel.TrackingNo] }}
+              style={{ width: '100%', height: 200, borderRadius: 15, marginBottom: 20 }}
+              useNativeControls
+              resizeMode="contain"
+              shouldPlay={false}
+            />
           )}
 
           <View style={styles.infoRow}>
